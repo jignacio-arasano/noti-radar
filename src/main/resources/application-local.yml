@@ -1,0 +1,55 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: monitor
+
+  datasource:
+    url: "jdbc:h2:file:./data/monitor-db;MODE=LEGACY;DB_CLOSE_ON_EXIT=FALSE"
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate.jdbc.time_zone: UTC
+      hibernate.dialect: org.hibernate.dialect.H2Dialect
+
+  h2:
+    console:
+      enabled: true
+      path: /h2
+
+  thymeleaf:
+    cache: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: imstemai@gmail.com
+    password: uuur howo hsww onlu
+    default-encoding: UTF-8
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.connectiontimeout: 10000
+      mail.smtp.timeout: 10000
+      mail.smtp.writetimeout: 10000
+
+logging:
+  level:
+    root: info
+    com.redaccion.monitor: info
+
+monitor:
+  userAgent: RedaccionMonitor/1.0 (+email)
+  timeoutMs: 12000
+  intervalMinutes: 15
+  jitterMsMax: 30000
+  seedUrls: https://www.clarin.com/politica
+  mailFrom: imsteamai@gmail.com
+  mailTo: alvarezrasanoj@gmail.com

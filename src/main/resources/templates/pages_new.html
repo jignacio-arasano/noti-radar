@@ -1,0 +1,19 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+<div th:replace="~{fragments :: navbar}"></div>
+
+<main>
+  <h2>Agregar URL</h2>
+  <form action="/pages" method="post">
+    <label>
+      URL a monitorear
+      <input type="url" name="url" required placeholder="https://www.clarin.com/politica"/>
+    </label>
+    <button type="submit">Guardar</button>
+    <a href="/pages">Volver</a>
+  </form>
+</main>
+</body>
+</html>

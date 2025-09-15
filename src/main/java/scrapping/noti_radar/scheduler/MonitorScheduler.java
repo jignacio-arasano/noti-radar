@@ -1,4 +1,4 @@
-package scrapping.noti_radar.scheduler;
+/*package scrapping.noti_radar.scheduler;
 
 import scrapping.noti_radar.config.MonitorProperties;
 import scrapping.noti_radar.service.MonitorService;
@@ -21,4 +21,4 @@ public class MonitorScheduler {
     public void run() {
         monitorService.checkAllWithJitter(props.getJitterMsMax());
     }
-}
+}*/

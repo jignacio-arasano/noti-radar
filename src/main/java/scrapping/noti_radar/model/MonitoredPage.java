@@ -1,5 +1,4 @@
 package scrapping.noti_radar.model;
-
 import jakarta.persistence.*;
 import java.time.Instant;
 

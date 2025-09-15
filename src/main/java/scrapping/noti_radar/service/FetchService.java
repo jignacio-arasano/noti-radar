@@ -1,7 +1,4 @@
 package scrapping.noti_radar.service;
-
-
-
 import scrapping.noti_radar.config.MonitorProperties;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;

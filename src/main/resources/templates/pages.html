@@ -1,0 +1,54 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+<div th:replace="~{fragments :: navbar}"></div>
+
+<main>
+  <h2>Monitoreo de páginas</h2>
+  <form>
+    <input id="q" type="search" placeholder="Filtrar por URL..." aria-label="Buscar por URL"/>
+    <a href="/pages">Refrescar</a>
+    <a href="/pages/new">Agregar URL</a>
+  </form>
+
+  <table id="pagesTable" border="1">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>URL</th>
+      <th>Último chequeo</th>
+      <th>Última modificación</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="p : ${pages}" th:attr="data-url=${p.url}">
+      <td th:text="${p.id}">1</td>
+      <td><a th:href="${p.url}" th:text="${p.url}" target="_blank">https://...</a></td>
+      <td><time th:text="${p.lastChecked != null ? #temporals.format(p.lastChecked, 'dd/MM/yyyy HH:mm') : '-'}"></time></td>
+      <td><time th:text="${p.lastChanged != null ? #temporals.format(p.lastChanged, 'dd/MM/yyyy HH:mm') : '-'}"></time></td>
+      <td>
+        <span th:if="${p.lastError == null}">OK</span>
+        <span th:if="${p.lastError != null}">Error</span>
+      </td>
+      <td>
+        <form th:action="@{'/pages/' + ${p.id} + '/check'}" method="post">
+          <button type="submit">Check</button>
+        </form>
+        <a th:href="@{'/pages/' + ${p.id} + '/versions'}">Versiones</a>
+        <form th:action="@{'/pages/' + ${p.id} + '/delete'}" method="post"
+              onsubmit="return confirm('¿Eliminar esta URL del monitoreo?')">
+          <button type="submit">Eliminar</button>
+        </form>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(pages)}">
+      <td colspan="6">No hay URLs aún.</td>
+    </tr>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>

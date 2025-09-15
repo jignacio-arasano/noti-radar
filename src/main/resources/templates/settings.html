@@ -1,0 +1,24 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+<div th:replace="~{fragments :: navbar}"></div>
+
+<main>
+    <h2>Settings</h2>
+    <a href="/pages">Páginas</a>
+    <form action="/settings/test-email" method="post">
+        <button type="submit">Enviar email de prueba</button>
+    </form>
+
+    <h3>Correo</h3>
+    <p>FROM: <span th:text="${props.mailFrom}">from</span></p>
+    <p>TO: <span th:text="${props.mailTo}">to</span></p>
+
+    <h3>Monitor</h3>
+    <p>User-Agent: <span th:text="${props.userAgent}">UA</span></p>
+    <p>Intervalo (min): <span th:text="${props.intervalMinutes}">15</span></p>
+    <p>Jitter (ms): <span th:text="${props.jitterMsMax}">30000</span></p>
+</main>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+<div th:replace="~{fragments :: navbar}"></div>
+
+<main>
+    <h2>Versiones</h2>
+    <p>Historial de capturas para: <a th:href="${page.url}" th:text="${page.url}" target="_blank">URL</a></p>
+    <a th:href="@{'/pages'}">Páginas</a>
+
+    <table id="versionsTable" border="1">
+        <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Hash</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="v : ${versions}" th:attr="data-hash=${v.hash}">
+            <td><time th:text="${#temporals.format(v.createdAt, 'dd/MM/yyyy HH:mm')}"></time></td>
+            <td><span th:text="${v.hash}">hash</span></td>
+            <td><a th:href="@{'/pages/' + ${page.id} + '/diff/' + ${v.id}}">Ver diff</a></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(versions)}">
+            <td colspan="3">Aún no hay versiones guardadas.</td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

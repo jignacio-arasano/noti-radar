@@ -1,0 +1,19 @@
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="head">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title th:text="${title} ?: 'Redacción Monitor'">Redacción Monitor</title>
+</div>
+
+<header xmlns:th="http://www.thymeleaf.org" th:fragment="navbar">
+  <div>
+    <div>
+      <span>📰 Redacción Monitor</span>
+    </div>
+    <nav>
+      <a href="/pages">Páginas</a>
+      <a href="/pages/new">Agregar URL</a>
+      <a href="/settings">Settings</a>
+    </nav>
+  </div>
+</header>
+

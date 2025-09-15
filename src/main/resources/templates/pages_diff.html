@@ -1,0 +1,19 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+<div th:replace="~{fragments :: navbar}"></div>
+
+<main>
+  <h2>Comparar contenido</h2>
+  <p>Página: <a th:href="${page.url}" th:text="${page.url}" target="_blank">URL</a></p>
+  <a th:href="@{'/pages/' + ${page.id} + '/versions'}">Volver a versiones</a>
+
+  <h3>Versión seleccionada</h3>
+  <pre th:text="${versionContent}"></pre>
+
+  <h3>Versión actual</h3>
+  <pre th:text="${currentContent}"></pre>
+</main>
+</body>
+</html>

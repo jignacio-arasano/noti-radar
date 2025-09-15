@@ -1,15 +1,16 @@
-# Imagen base con Java 21
+# Etapa 1: build con Maven
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Etapa 2: imagen final con solo Java
 FROM openjdk:21-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 
-# Argumento: jar que genera Maven
-ARG JAR_FILE=target/*.jar
-
-# Copiar el jar compilado al contenedor
-COPY ${JAR_FILE} app.jar
-
-# Render asigna el puerto en $PORT
 ENV PORT=8080
 EXPOSE 8080
 
-# Comando para arrancar la app
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java","-jar","/app/app.jar"]
+

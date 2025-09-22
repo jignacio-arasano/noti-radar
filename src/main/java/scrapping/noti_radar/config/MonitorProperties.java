@@ -3,6 +3,8 @@ package scrapping.noti_radar.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @ConfigurationProperties(prefix = "monitor")
 public class MonitorProperties {
@@ -12,8 +14,8 @@ public class MonitorProperties {
     private int jitterMsMax;
     private String seedUrls;
     private String mailFrom;
-    private String mailTo;
-
+    //private String mailTo;
+    private List<String> mailTo;
     public String getUserAgent() {
         return userAgent;
     }
@@ -62,13 +64,21 @@ public class MonitorProperties {
         this.mailFrom = mailFrom;
     }
 
-    public String getMailTo() {
+    /*public String getMailTo() {
         return mailTo;
     }
 
     public void setMailTo(String mailTo) {
         this.mailTo = mailTo;
     }
+    */
 
+    public List<String> getMailTo() {
+        return mailTo;
+    }
+
+    public void setMailTo(List<String> mailTo) {
+        this.mailTo = mailTo;
+    }
     // getters/setters...
 }

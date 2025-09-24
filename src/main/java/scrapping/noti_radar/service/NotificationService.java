@@ -60,32 +60,63 @@ public class NotificationService {
             sendEmail(subject, body);
         }
 
-        private void sendEmail(String subject, String body) {
-            if (props.getMailTo() == null || props.getMailTo().isEmpty()) {
-                log.warn("No hay destinatarios configurados para las notificaciones.");
-                return;
-            }
-            SendGrid sendGrid = createClient();
-            if (sendGrid == null) {
-                return;
-            }
-            for (String recipient : props.getMailTo()) {
-                Mail mail = new Mail(new Email(props.getMailFrom()), subject, new Email(recipient), new Content("text/plain", body));
-                Request request = new Request();
-                try {
-                    request.setMethod(Method.POST);
-                    request.setEndpoint("mail/send");
-                    request.setBody(mail.build());
-                    Response response = sendGrid.api(request);
-                    log.debug("SendGrid respondió {} al enviar correo a {}", response.getStatusCode(), recipient);
-                } catch (IOException ex) {
-                    log.error("No se pudo enviar el correo a {}: {}", recipient, ex.getMessage());
-                    throw new RuntimeException("Error al enviar correo con SendGrid", ex);
-                }
-            }
+    private void sendEmail(String subject, String body) {
+        if (props.getMailTo() == null || props.getMailTo().isEmpty()) {
+            log.warn("No hay destinatarios configurados para las notificaciones.");
+            return;
         }
 
-        private SendGrid createClient() {
+        // Debug extra: mostrar config básica
+        log.info("Intentando enviar email...");
+        log.info("Remitente configurado: {}", props.getMailFrom());
+        log.info("Destinatarios: {}", props.getMailTo());
+        log.info("Asunto: {}", subject);
+        log.info("Longitud del cuerpo: {} caracteres", body.length());
+        log.info("API Key cargada: {}",
+                (sendGridApiKey != null && !sendGridApiKey.isBlank())
+                        ? "Sí (longitud " + sendGridApiKey.length() + ")"
+                        : "NO ❌");
+
+        SendGrid sendGrid = createClient();
+        if (sendGrid == null) {
+            log.error("No se creó el cliente SendGrid (API Key nula o vacía).");
+            return;
+        }
+
+        for (String recipient : props.getMailTo()) {
+            try {
+                // Crear correo con helpers de SendGrid
+                Mail mail = new Mail(
+                        new Email(props.getMailFrom()),
+                        subject,
+                        new Email(recipient),
+                        new Content("text/plain", body)
+                );
+
+                Request request = new Request();
+                request.setMethod(Method.POST);
+                request.setEndpoint("mail/send");
+                request.setBody(mail.build());
+
+                // Llamada a la API de SendGrid
+                Response response = sendGrid.api(request);
+
+                // Log completo de la respuesta
+                log.info("SendGrid status={}, body={}, headers={} → destinatario={}",
+                        response.getStatusCode(),
+                        response.getBody(),
+                        response.getHeaders(),
+                        recipient);
+
+            } catch (IOException ex) {
+                log.error("No se pudo enviar el correo a {}: {}", recipient, ex.getMessage(), ex);
+                throw new RuntimeException("Error al enviar correo con SendGrid", ex);
+            }
+        }
+    }
+
+
+    private SendGrid createClient() {
             if (sendGridApiKey == null || sendGridApiKey.isBlank()) {
                 log.error("SENDGRID_API_KEY no está configurada. Configure la variable de entorno para habilitar el envío de correos.");
                 return null;

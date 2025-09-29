@@ -4,51 +4,97 @@
 <body>
 <div th:replace="~{fragments :: navbar}"></div>
 
-<main>
-  <h2>Monitoreo de páginas</h2>
-  <form>
-    <input id="q" type="search" placeholder="Filtrar por URL..." aria-label="Buscar por URL"/>
-    <a href="/pages">Refrescar</a>
-    <a href="/pages/new">Agregar URL</a>
-  </form>
+<main class="container">
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h2 style="margin:0 0 6px 0;">Monitoreo de páginas</h2>
+        <div class="hint">CRUD de URLs + estado, con acciones rápidas y búsqueda client-side.</div>
+      </div>
+      <div class="toolbar">
+        <div class="searchbar">
+          <span class="icon">🔎</span>
+          <input id="q" type="search" placeholder="Filtrar por URL..." aria-label="Buscar por URL"/>
+        </div>
+        <a class="btn" href="/pages" title="Refrescar lista">⟲ <span class="txt">Refrescar</span></a>
+        <a class="btn btn-primary" href="/pages/new">＋ <span class="txt">Agregar URL</span></a>
+      </div>
+    </div>
 
-  <table id="pagesTable" border="1">
-    <thead>
-    <tr>
-      <th>ID</th>
-      <th>URL</th>
-      <th>Último chequeo</th>
-      <th>Última modificación</th>
-      <th>Estado</th>
-      <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="p : ${pages}" th:attr="data-url=${p.url}">
-      <td th:text="${p.id}">1</td>
-      <td><a th:href="${p.url}" th:text="${p.url}" target="_blank">https://...</a></td>
-      <td><time th:text="${p.lastChecked != null ? #temporals.format(p.lastChecked, 'dd/MM/yyyy HH:mm') : '-'}"></time></td>
-      <td><time th:text="${p.lastChanged != null ? #temporals.format(p.lastChanged, 'dd/MM/yyyy HH:mm') : '-'}"></time></td>
-      <td>
-        <span th:if="${p.lastError == null}">OK</span>
-        <span th:if="${p.lastError != null}">Error</span>
-      </td>
-      <td>
-        <form th:action="@{'/pages/' + ${p.id} + '/check'}" method="post">
-          <button type="submit">Check</button>
-        </form>
-        <a th:href="@{'/pages/' + ${p.id} + '/versions'}">Versiones</a>
-        <form th:action="@{'/pages/' + ${p.id} + '/delete'}" method="post"
-              onsubmit="return confirm('¿Eliminar esta URL del monitoreo?')">
-          <button type="submit">Eliminar</button>
-        </form>
-      </td>
-    </tr>
-    <tr th:if="${#lists.isEmpty(pages)}">
-      <td colspan="6">No hay URLs aún.</td>
-    </tr>
-    </tbody>
-  </table>
+    <div class="card-body">
+      <div class="table-wrap">
+        <table id="pagesTable">
+          <thead>
+          <tr>
+            <th class="col-id">ID</th>
+            <th>URL</th>
+            <th>Último chequeo</th>
+            <th>Última modificación</th>
+            <th>Estado</th>
+            <th style="text-align:right">Acciones</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="p : ${pages}" th:attr="data-url=${p.url}">
+            <td class="col-id mono" th:text="${p.id}">1</td>
+            <td>
+              <a th:href="${p.url}" th:text="${p.url}" target="_blank" rel="noopener">https://...</a>
+            </td>
+            <td class="mono">
+              <time th:text="${p.lastChecked != null ? #temporals.format(p.lastChecked, 'dd/MM/yyyy HH:mm') : '-'}"
+                    th:attr="datetime=${p.lastChecked != null ? #temporals.formatISO(p.lastChecked) : ''}">
+              </time>
+            </td>
+            <td class="mono">
+              <time th:text="${p.lastChanged != null ? #temporals.format(p.lastChanged, 'dd/MM/yyyy HH:mm') : '-'}"
+                    th:attr="datetime=${p.lastChanged != null ? #temporals.formatISO(p.lastChanged) : ''}">
+              </time>
+            </td>
+            <td>
+              <span th:if="${p.lastError == null}" class="badge badge-ok">OK</span>
+              <span th:if="${p.lastError != null}" class="badge badge-err" th:attr="title=${p.lastError}">Error</span>
+            </td>
+            <td class="actions" style="text-align:right">
+              <form th:action="@{'/pages/' + ${p.id} + '/check'}" method="post" style="display:inline">
+                <button class="btn" type="submit" title="Chequear ahora">⟳ <span class="txt">Check</span></button>
+              </form>
+              <a class="btn" th:href="@{'/pages/' + ${p.id} + '/versions'}" title="Ver historial">🕘 <span class="txt">Versiones</span></a>
+              <form th:action="@{'/pages/' + ${p.id} + '/delete'}" method="post" style="display:inline"
+                    onsubmit="return confirm('¿Eliminar esta URL del monitoreo?')">
+                <button class="btn btn-danger" type="submit" title="Eliminar">🗑 <span class="txt">Eliminar</span></button>
+              </form>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(pages)}">
+            <td colspan="6" style="text-align:center;color:var(--muted);padding:18px">
+              No hay URLs aún. Hacé clic en <b>Agregar URL</b> para empezar.
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:10px" class="hint">
+        Consejo: pasá el mouse por “Error” para ver el detalle (tooltip).
+      </div>
+    </div>
+  </section>
 </main>
+
+<script>
+  (function(){
+    const q = document.getElementById('q');
+    const rows = Array.from(document.querySelectorAll('#pagesTable tbody tr'))
+                       .filter(tr => tr.hasAttribute('data-url'));
+    function apply(){
+      const term = (q.value || '').toLowerCase().trim();
+      rows.forEach(tr => {
+        const url = (tr.getAttribute('data-url') || '').toLowerCase();
+        tr.style.display = (!term || url.includes(term)) ? '' : 'none';
+      });
+    }
+    q.addEventListener('input', apply);
+  })();
+</script>
 </body>
 </html>

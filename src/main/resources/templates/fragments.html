@@ -1,4 +1,6 @@
-<div xmlns:th="http://www.thymeleaf.org" th:fragment="head">
+<<!-- templates/fragments.html -->
+<!-- src/main/resources/templates/fragments.html -->
+<head xmlns:th="http://www.thymeleaf.org" th:fragment="head">
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title th:text="${title} ?: 'Redacción Monitor'">Redacción Monitor</title>
@@ -32,6 +34,7 @@
         --shadow:0 8px 20px rgba(0,0,0,.35);
       }
     }
+
     *{box-sizing:border-box; min-width:0}
     html,body{
       margin:0; padding:0; background:var(--bg); color:var(--text);
@@ -124,6 +127,7 @@
     td.actions{white-space:nowrap}
     .mono{font-family:ui-monospace,Consolas,Menlo,monospace}
 
+    /* ajustes base para pantallas chicas */
     @media (max-width:760px){
       .col-id{display:none}
       .btn .txt{display:none}
@@ -132,6 +136,80 @@
 
     .hint{font-size:12px;color:var(--muted)}
     .grid-fit{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))}
+
+    /* ======= MODO MÓVIL (vertical) ======= */
+    @media (max-width: 760px){
+
+      /* Header pegado arriba y navegación “a la mano” */
+      .app-header{position: sticky; top: 0; z-index: 50; background: var(--bg); padding-block: 8px}
+      .nav-actions{width:100%; overflow:auto; -webkit-overflow-scrolling: touch; gap:8px}
+      .nav-actions .btn{flex:0 0 auto}
+
+      /* Toolbars compactas y usables con pulgar */
+      .card .card-header{gap:12px}
+      .toolbar{width:100%; align-items:stretch; gap:8px}
+      .searchbar{order:2; flex:1 1 100%; min-width:0}
+      .toolbar .btn{flex:1 1 0; justify-content:center}
+      .btn .txt{display:none} /* deja solo íconos en botones */
+
+      /* Tablas -> tarjetas apiladas (Pages y Versions) */
+      .table-wrap{border:none; background:transparent; box-shadow:none}
+      table{display:block; width:100%}
+      thead{display:none}
+      tbody{display:grid; gap:12px}
+      tbody tr{
+        display:grid; gap:10px;
+        padding:12px; border:1px solid var(--border);
+        border-radius: var(--radius-sm); background: var(--card); box-shadow: var(--shadow);
+      }
+      tbody td{
+        display:grid; grid-template-columns: 120px 1fr; align-items:center;
+        border:0; padding:6px 0;
+      }
+      tbody td::before{
+        content:''; /* se sobreescribe por tabla abajo */
+        font-weight:800; color:var(--muted);
+        padding-right:10px;
+      }
+
+      /* -------- Páginas (pagesTable) -------- */
+      #pagesTable .col-id{display:none}          /* escondé ID */
+      #pagesTable td:nth-child(2)::before{content:"URL"}
+      #pagesTable td:nth-child(3)::before{content:"Último chequeo"}
+      #pagesTable td:nth-child(4)::before{content:"Última modificación"}
+      #pagesTable td:nth-child(5)::before{content:"Estado"}
+      #pagesTable td:nth-child(6)::before{content:"Acciones"}
+
+      /* Acciones: botones grandes y en columna */
+      #pagesTable td.actions{grid-template-columns:1fr}
+      #pagesTable td.actions .btn{width:100%; justify-content:center; margin-bottom:8px}
+      #pagesTable td.actions .btn:last-child{margin-bottom:0}
+
+      /* Fila vacía (colspan) que muestre el mensaje centrado */
+      #pagesTable td[colspan]{grid-template-columns:1fr; padding:14px}
+      #pagesTable td[colspan]::before{content:''; display:none}
+
+      /* -------- Versiones (versionsTable) -------- */
+      #versionsTable td:nth-child(1)::before{content:"Fecha"}
+      #versionsTable td:nth-child(2)::before{content:"Hash"}
+      #versionsTable td:nth-child(3)::before{content:"Acciones"}
+      #versionsTable td.actions{grid-template-columns:1fr}
+      #versionsTable td.actions .btn{width:100%; justify-content:center}
+
+      /* -------- Diff (ya se apila; afinamos altura y controles) -------- */
+      .diff-grid{grid-template-columns:1fr}
+      .diff-pre{max-height:60vh} /* más aire de lectura en móvil */
+      #wrapBtn,#syncBtn{flex:1 1 0} /* botones más anchos para tap */
+
+      /* Pequeñas mejoras táctiles */
+      .btn{padding:12px 14px; border-radius:14px}
+      .searchbar input{padding:12px 12px 12px 36px}
+      tbody tr:hover{background:rgba(0,0,0,.015)}
+      @media (prefers-color-scheme: dark){
+        tbody tr:hover{background:rgba(255,255,255,.03)}
+      }
+    }
+    /* ======= FIN MODO MÓVIL ======= */
   </style>
 
   <script>
@@ -151,7 +229,7 @@
       });
     });
   </script>
-</div>
+</head>
 
 <header xmlns:th="http://www.thymeleaf.org" th:fragment="navbar">
   <div class="container app-header">

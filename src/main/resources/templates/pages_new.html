@@ -14,14 +14,14 @@
     </div>
 
     <div class="card-body">
-      <form action="/pages" method="post" style="display:grid; gap:14px; max-width:780px;">
+      <form action="/pages" method="post" class="form-grid">
         <label style="display:grid; gap:8px;">
           <span>URL a monitorear</span>
           <input type="url" name="url" required placeholder="https://www.clarin.com/politica"
                  style="padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text)"/>
           <small class="hint">Usá una URL canónica de la sección; evitá URLs con parámetros dinámicos.</small>
         </label>
-        <div style="display:flex; gap:10px;">
+        <div class="form-actions">
           <button class="btn btn-primary" type="submit">＋ Guardar</button>
           <a class="btn" href="/pages">← Volver</a>
         </div>

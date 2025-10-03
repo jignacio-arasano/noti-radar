@@ -71,12 +71,13 @@
     }
 
     .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .toolbar form{display:inline-flex}
     .spacer{flex:1 1 auto}
 
     .btn{
       appearance:none;border:1px solid var(--border);background:var(--card);color:var(--text);
       padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;
-      display:inline-flex;gap:8px;align-items:center;box-shadow:var(--shadow);line-height:1;
+      display:inline-flex;gap:8px;align-items:center;justify-content:center;box-shadow:var(--shadow);line-height:1;
     }
     .btn:hover{filter:brightness(0.98)}
     .btn:active{transform:translateY(1px)}
@@ -126,12 +127,59 @@
 
     @media (max-width:760px){
       .col-id{display:none}
-      .btn .txt{display:none}
-      .searchbar{min-width:180px}
+      .searchbar{min-width:0}
     }
+
+    .form-grid{display:grid;gap:14px;max-width:780px}
+    .form-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+    .card-plain{background:transparent;border:none;box-shadow:none;padding:0}
+    .settings-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+
+    table.responsive{width:100%}
+    .inline-form{display:inline-flex;gap:0;margin:0}
 
     .hint{font-size:12px;color:var(--muted)}
     .grid-fit{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))}
+
+    @media (max-width:640px){
+      .container{padding-inline: clamp(10px, 6vw, 24px)}
+      .app-header{flex-direction:column;align-items:flex-start}
+      .nav-actions{width:100%;flex-direction:column;align-items:stretch}
+      .nav-actions .btn{width:100%}
+      header .nav-actions .btn{justify-content:flex-start}
+      .card .card-header{flex-direction:column;align-items:flex-start}
+      .toolbar{flex-direction:column;align-items:stretch}
+      .toolbar .spacer{display:none}
+      .toolbar > *{width:100%}
+      .toolbar form{display:flex;width:100%}
+      .toolbar .btn{width:100%}
+      .toolbar .searchbar{width:100%;min-width:0}
+      .btn .txt{display:inline}
+      .form-actions{flex-direction:column}
+      .form-actions .btn{width:100%}
+      .table-wrap{border:none;box-shadow:none;background:transparent;padding:0}
+      table.responsive thead{display:none}
+      table.responsive tbody{display:grid;gap:12px}
+      table.responsive tr{display:grid;gap:10px;padding:14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--card);box-shadow:var(--shadow)}
+      table.responsive tr.empty-row{display:flex;justify-content:center;text-align:center;padding:18px}
+      table.responsive td{border:none;padding:0}
+      table.responsive td[data-label]{display:flex;flex-direction:column;gap:6px}
+      table.responsive td[data-label]::before{
+        content:attr(data-label);
+        font-size:11px;
+        font-weight:700;
+        text-transform:uppercase;
+        letter-spacing:.04em;
+        color:var(--muted);
+      }
+      table.responsive td.actions{display:flex;flex-direction:column;gap:8px;align-items:stretch;text-align:left !important}
+      table.responsive td.actions form{width:100%}
+      table.responsive td.actions .btn,
+      table.responsive td.actions a.btn{width:100%}
+      .diff-header{flex-direction:column;align-items:flex-start;gap:6px}
+      .inline-form{display:flex;width:100%}
+    }
   </style>
 
   <script>

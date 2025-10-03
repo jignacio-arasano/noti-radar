@@ -13,21 +13,21 @@
             </div>
             <div class="toolbar">
                 <a class="btn" href="/pages">← Páginas</a>
-                <form action="/settings/test-email" method="post" style="display:inline">
+                <form action="/settings/test-email" method="post" class="inline-form">
                     <button class="btn btn-primary" type="submit">✉ Enviar email de prueba</button>
                 </form>
             </div>
         </div>
 
         <div class="card-body">
-            <div style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
-                <div class="card" style="border:none;box-shadow:none">
+            <div class="settings-grid">
+                <div class="card card-plain">
                     <div class="hint" style="margin-bottom:6px">Correo</div>
                     <div><b>FROM:</b> <span th:text="${props.mailFrom}">from</span></div>
                     <div><b>TO:</b> <span th:text="${props.mailTo}">to</span></div>
                 </div>
 
-                <div class="card" style="border:none;box-shadow:none">
+                <div class="card card-plain">
                     <div class="hint" style="margin-bottom:6px">Monitor</div>
                     <div><b>User-Agent:</b> <span th:text="${props.userAgent}">UA</span></div>
                     <div><b>Intervalo (min):</b> <span th:text="${props.intervalMinutes}">15</span></div>

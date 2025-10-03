@@ -4,30 +4,29 @@
 <body>
 <div th:replace="~{fragments :: navbar}"></div>
 
-<main class="container">
-  <section class="card">
-    <div class="card-header">
-      <div>
+<main class="container"><!-- main-container-open -->
+  <section class="card"><!-- section-card-open -->
+    <div class="card-header"><!-- card-header-open -->
+      <div><!-- header-intro-open -->
         <h2 style="margin:0 0 6px 0;">Agregar URL</h2>
         <div class="hint">Añadí una página para monitorear cambios de contenido.</div>
-      </div>
-    </div>
+      </div><!-- header-intro-close -->
+    </div><!-- card-header-close -->
 
-    <div class="card-body">
-      <form action="/pages" method="post" style="display:grid; gap:14px; max-width:780px;">
-        <label style="display:grid; gap:8px;">
+    <div class="card-body"><!-- card-body-open -->
+      <form action="/pages" method="post" class="form-grid"><!-- form-open -->
+        <label class="form-field"><!-- field-url-open -->
           <span>URL a monitorear</span>
-          <input type="url" name="url" required placeholder="https://www.clarin.com/politica"
-                 style="padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text)"/>
+          <input class="input-control" type="url" name="url" required placeholder="https://www.clarin.com/politica"/>
           <small class="hint">Usá una URL canónica de la sección; evitá URLs con parámetros dinámicos.</small>
-        </label>
-        <div style="display:flex; gap:10px;">
-          <button class="btn btn-primary" type="submit">＋ Guardar</button>
-          <a class="btn" href="/pages">← Volver</a>
-        </div>
-      </form>
-    </div>
-  </section>
-</main>
+        </label><!-- field-url-close -->
+        <div class="form-actions"><!-- form-actions-open -->
+          <button class="btn btn-primary" type="submit"><!-- submit-btn-open -->＋ Guardar</button><!-- submit-btn-close -->
+          <a class="btn" href="/pages"><!-- back-link-open -->← Volver</a><!-- back-link-close -->
+        </div><!-- form-actions-close -->
+      </form><!-- form-close -->
+    </div><!-- card-body-close -->
+  </section><!-- section-card-close -->
+</main><!-- main-container-close -->
 </body>
 </html>

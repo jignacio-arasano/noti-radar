@@ -4,24 +4,24 @@
 <body>
 <div th:replace="~{fragments :: navbar}"></div>
 
-<main class="container">
-    <section class="card">
-        <div class="card-header">
-            <div>
+<main class="container"><!-- main-container-open -->
+    <section class="card"><!-- section-card-open -->
+        <div class="card-header"><!-- card-header-open -->
+            <div><!-- header-intro-open -->
                 <h2 style="margin:0 0 6px 0;">Versiones</h2>
-                <div class="hint">Historial de capturas para: <a th:href="${page.url}" target="_blank" rel="noopener" th:text="${page.url}">URL</a></div>
-            </div>
-            <div class="toolbar">
-                <div class="searchbar">
+                <div class="hint">Historial de capturas para: <a th:href="${page.url}" target="_blank" rel="noopener" th:text="${page.url}"><!-- page-link-open -->URL</a><!-- page-link-close --></div>
+            </div><!-- header-intro-close -->
+            <div class="toolbar"><!-- toolbar-open -->
+                <div class="searchbar"><!-- searchbar-open -->
                     <span class="icon">🔎</span>
                     <input id="q" type="search" placeholder="Filtrar por hash..." aria-label="Buscar por hash"/>
-                </div>
-                <a class="btn" th:href="@{'/pages'}">← Páginas</a>
-            </div>
-        </div>
+                </div><!-- searchbar-close -->
+                <a class="btn" th:href="@{'/pages'}"><!-- back-link-open -->← Páginas</a><!-- back-link-close -->
+            </div><!-- toolbar-close -->
+        </div><!-- card-header-close -->
 
-        <div class="card-body">
-            <div class="table-wrap">
+        <div class="card-body"><!-- card-body-open -->
+            <div class="table-wrap"><!-- table-wrap-open -->
                 <table id="versionsTable">
                     <thead>
                     <tr>
@@ -39,13 +39,13 @@
                         <td class="mono">
                             <span th:text="${v.hash}">hash</span>
                             <button class="btn btn-ghost" type="button" title="Copiar hash"
-                                    onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent)">
+                                    onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent)"><!-- copy-btn-open -->
                                 📋 <span class="txt">Copiar</span>
-                            </button>
+                            </button><!-- copy-btn-close -->
                         </td>
-                        <td class="actions" style="text-align:right">
-                            <a class="btn" th:href="@{'/pages/' + ${page.id} + '/diff/' + ${v.id}}">🧩 <span class="txt">Ver diff</span></a>
-                        </td>
+                        <td class="actions" style="text-align:right"><!-- actions-cell-open -->
+                            <a class="btn" th:href="@{'/pages/' + ${page.id} + '/diff/' + ${v.id}}"><!-- diff-link-open -->🧩 <span class="txt">Ver diff</span></a><!-- diff-link-close -->
+                        </td><!-- actions-cell-close -->
                     </tr>
                     <tr th:if="${#lists.isEmpty(versions)}">
                         <td colspan="3" style="text-align:center;color:var(--muted);padding:18px">
@@ -54,13 +54,13 @@
                     </tr>
                     </tbody>
                 </table>
-            </div>
-            <div style="margin-top:10px" class="hint">
+            </div><!-- table-wrap-close -->
+            <div style="margin-top:10px" class="hint"><!-- hint-open -->
                 Tip: copiá un hash para comparaciones externas.
-            </div>
-        </div>
-    </section>
-</main>
+            </div><!-- hint-close -->
+        </div><!-- card-body-close -->
+    </section><!-- section-card-close -->
+</main><!-- main-container-close -->
 
 <script>
     (function(){

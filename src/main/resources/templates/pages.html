@@ -23,7 +23,7 @@
 
     <div class="card-body">
       <div class="table-wrap">
-        <table id="pagesTable">
+        <table id="pagesTable" class="stack-table">
           <thead>
           <tr>
             <th class="col-id">ID</th>
@@ -35,31 +35,31 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="p : ${pages}" th:attr="data-url=${p.url}">
-            <td class="col-id mono" th:text="${p.id}">1</td>
-            <td>
+          <tr th:each="p : ${pages}" th:attr="data-url=${p.url},data-stack-row=${true}">
+            <td class="col-id mono" data-label="ID" th:text="${p.id}">1</td>
+            <td data-label="URL">
               <a th:href="${p.url}" th:text="${p.url}" target="_blank" rel="noopener">https://...</a>
             </td>
-            <td class="mono">
+            <td class="mono" data-label="Último chequeo">
               <time th:text="${p.lastChecked != null ? #temporals.format(p.lastChecked, 'dd/MM/yyyy HH:mm') : '-'}"
                     th:attr="datetime=${p.lastChecked != null ? #temporals.formatISO(p.lastChecked) : ''}">
               </time>
             </td>
-            <td class="mono">
+            <td class="mono" data-label="Última modificación">
               <time th:text="${p.lastChanged != null ? #temporals.format(p.lastChanged, 'dd/MM/yyyy HH:mm') : '-'}"
                     th:attr="datetime=${p.lastChanged != null ? #temporals.formatISO(p.lastChanged) : ''}">
               </time>
             </td>
-            <td>
+            <td data-label="Estado">
               <span th:if="${p.lastError == null}" class="badge badge-ok">OK</span>
               <span th:if="${p.lastError != null}" class="badge badge-err" th:attr="title=${p.lastError}">Error</span>
             </td>
-            <td class="actions" style="text-align:right">
-              <form th:action="@{'/pages/' + ${p.id} + '/check'}" method="post" style="display:inline">
+            <td class="actions" data-label="Acciones" style="text-align:right">
+              <form th:action="@{'/pages/' + ${p.id} + '/check'}" method="post">
                 <button class="btn" type="submit" title="Chequear ahora">⟳ <span class="txt">Check</span></button>
               </form>
               <a class="btn" th:href="@{'/pages/' + ${p.id} + '/versions'}" title="Ver historial">🕘 <span class="txt">Versiones</span></a>
-              <form th:action="@{'/pages/' + ${p.id} + '/delete'}" method="post" style="display:inline"
+              <form th:action="@{'/pages/' + ${p.id} + '/delete'}" method="post"
                     onsubmit="return confirm('¿Eliminar esta URL del monitoreo?')">
                 <button class="btn btn-danger" type="submit" title="Eliminar">🗑 <span class="txt">Eliminar</span></button>
               </form>

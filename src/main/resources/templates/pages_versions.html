@@ -22,7 +22,7 @@
 
         <div class="card-body">
             <div class="table-wrap">
-                <table id="versionsTable">
+                <table id="versionsTable" class="stack-table">
                     <thead>
                     <tr>
                         <th>Fecha</th>
@@ -31,19 +31,19 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="v : ${versions}" th:attr="data-hash=${v.hash}">
-                        <td class="mono">
+                    <tr th:each="v : ${versions}" th:attr="data-hash=${v.hash},data-stack-row=${true}">
+                        <td class="mono" data-label="Fecha">
                             <time th:text="${#temporals.format(v.createdAt, 'dd/MM/yyyy HH:mm')}"
                                   th:attr="datetime=${#temporals.formatISO(v.createdAt)}"></time>
                         </td>
-                        <td class="mono">
+                        <td class="mono" data-label="Hash">
                             <span th:text="${v.hash}">hash</span>
                             <button class="btn btn-ghost" type="button" title="Copiar hash"
                                     onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent)">
                                 📋 <span class="txt">Copiar</span>
                             </button>
                         </td>
-                        <td class="actions" style="text-align:right">
+                        <td class="actions" data-label="Acciones" style="text-align:right">
                             <a class="btn" th:href="@{'/pages/' + ${page.id} + '/diff/' + ${v.id}}">🧩 <span class="txt">Ver diff</span></a>
                         </td>
                     </tr>

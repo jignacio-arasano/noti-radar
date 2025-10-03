@@ -22,7 +22,7 @@
 
         <div class="card-body">
             <div class="table-wrap">
-                <table id="versionsTable">
+                <table id="versionsTable" data-mobile-card="true">
                     <thead>
                     <tr>
                         <th>Fecha</th>
@@ -32,22 +32,24 @@
                     </thead>
                     <tbody>
                     <tr th:each="v : ${versions}" th:attr="data-hash=${v.hash}">
-                        <td class="mono">
+                        <td class="mono" data-label="Fecha">
                             <time th:text="${#temporals.format(v.createdAt, 'dd/MM/yyyy HH:mm')}"
                                   th:attr="datetime=${#temporals.formatISO(v.createdAt)}"></time>
                         </td>
-                        <td class="mono">
+                        <td class="mono hash-cell" data-label="Hash">
                             <span th:text="${v.hash}">hash</span>
                             <button class="btn btn-ghost" type="button" title="Copiar hash"
                                     onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent)">
                                 📋 <span class="txt">Copiar</span>
                             </button>
                         </td>
-                        <td class="actions" style="text-align:right">
-                            <a class="btn" th:href="@{'/pages/' + ${page.id} + '/diff/' + ${v.id}}">🧩 <span class="txt">Ver diff</span></a>
+                        <td class="actions" data-label="Acciones" style="text-align:right">
+                            <div class="action-buttons">
+                                <a class="btn" th:href="@{'/pages/' + ${page.id} + '/diff/' + ${v.id}}">🧩 <span class="txt">Ver diff</span></a>
+                            </div>
                         </td>
                     </tr>
-                    <tr th:if="${#lists.isEmpty(versions)}">
+                    <tr th:if="${#lists.isEmpty(versions)}" class="empty-row">
                         <td colspan="3" style="text-align:center;color:var(--muted);padding:18px">
                             Aún no hay versiones guardadas para esta página.
                         </td>

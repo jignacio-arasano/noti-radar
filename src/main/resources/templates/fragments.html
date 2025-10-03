@@ -124,14 +124,58 @@
     td.actions{white-space:nowrap}
     .mono{font-family:ui-monospace,Consolas,Menlo,monospace}
 
-    @media (max-width:760px){
-      .col-id{display:none}
-      .btn .txt{display:none}
-      .searchbar{min-width:180px}
-    }
+    .action-buttons{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+    .action-buttons > *{margin:0}
+    .action-buttons form{display:inline-flex}
+    .action-buttons .btn{white-space:nowrap}
+
+    .hash-cell{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
 
     .hint{font-size:12px;color:var(--muted)}
     .grid-fit{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))}
+    .form-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .form-actions .btn{flex:1 1 auto}
+
+    @media (max-width:960px){
+      .col-id{display:none}
+    }
+    @media (max-width:780px){
+      .nav-actions{width:100%;justify-content:stretch;align-items:stretch;flex-direction:column}
+      .nav-actions .btn{flex:1 1 100%;justify-content:center}
+      .toolbar{width:100%;align-items:stretch}
+      .toolbar form{flex:1 1 100%}
+      .toolbar .searchbar{min-width:0;flex:1 1 100%}
+      .toolbar .btn{flex:1 1 100%;justify-content:center}
+      .action-buttons{justify-content:stretch}
+      .action-buttons > *{flex:1 1 100%}
+      .action-buttons form{width:100%}
+      .action-buttons .btn{width:100%;justify-content:center}
+      .form-actions{flex-direction:column}
+      .form-actions .btn{width:100%}
+    }
+    @media (max-width:720px){
+      .app-header{align-items:flex-start}
+      .card .card-header{align-items:stretch}
+      .searchbar{min-width:0;flex-basis:100%}
+      .table-wrap{overflow:visible;border:none;background:transparent;box-shadow:none;padding:0}
+      table[data-mobile-card]{border-spacing:0}
+      table[data-mobile-card] thead{display:none}
+      table[data-mobile-card] tbody{display:grid;gap:14px;margin:0;padding:0}
+      table[data-mobile-card] tr{display:grid;gap:10px;padding:16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow)}
+      table[data-mobile-card] td{display:flex;gap:12px;align-items:flex-start;padding:0;border:none}
+      table[data-mobile-card] td::before{content:attr(data-label);font-weight:700;color:var(--muted);flex:0 0 auto;text-transform:uppercase;font-size:11px;letter-spacing:.08em}
+      table[data-mobile-card] td.actions{flex-direction:column}
+      table[data-mobile-card] td.actions::before{margin-bottom:6px}
+      table[data-mobile-card] td.actions .action-buttons{flex-direction:column;gap:8px}
+      table[data-mobile-card] td.actions .btn{width:100%}
+      table[data-mobile-card] td[colspan]{display:block}
+      table[data-mobile-card] td[colspan]::before{display:none}
+      table[data-mobile-card] .hash-cell{flex-direction:column;align-items:stretch;gap:6px}
+    }
+    @media (max-width:520px){
+      .brand{flex-direction:column;align-items:flex-start}
+    }
   </style>
 
   <script>

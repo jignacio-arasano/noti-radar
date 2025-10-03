@@ -4,42 +4,42 @@
 <body>
 <div th:replace="~{fragments :: navbar}"></div>
 
-<main class="container">
-    <section class="card">
-        <div class="card-header">
-            <div>
+<main class="container"><!-- main-container-open -->
+    <section class="card"><!-- section-card-open -->
+        <div class="card-header"><!-- card-header-open -->
+            <div><!-- header-intro-open -->
                 <h2 style="margin:0 0 6px 0;">Settings</h2>
                 <div class="hint">Valores de configuración activos (perfil local).</div>
-            </div>
-            <div class="toolbar">
-                <a class="btn" href="/pages">← Páginas</a>
-                <form action="/settings/test-email" method="post" style="display:inline">
-                    <button class="btn btn-primary" type="submit">✉ Enviar email de prueba</button>
-                </form>
-            </div>
-        </div>
+            </div><!-- header-intro-close -->
+            <div class="toolbar"><!-- toolbar-open -->
+                <a class="btn" href="/pages"><!-- back-link-open -->← Páginas</a><!-- back-link-close -->
+                <form class="toolbar-form" action="/settings/test-email" method="post"><!-- form-test-email-open -->
+                    <button class="btn btn-primary" type="submit"><!-- test-email-btn-open -->✉ Enviar email de prueba</button><!-- test-email-btn-close -->
+                </form><!-- form-test-email-close -->
+            </div><!-- toolbar-close -->
+        </div><!-- card-header-close -->
 
-        <div class="card-body">
-            <div style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
-                <div class="card" style="border:none;box-shadow:none">
+        <div class="card-body"><!-- card-body-open -->
+            <div class="settings-grid"><!-- settings-grid-open -->
+                <div class="card card-ghost"><!-- card-mail-open -->
                     <div class="hint" style="margin-bottom:6px">Correo</div>
                     <div><b>FROM:</b> <span th:text="${props.mailFrom}">from</span></div>
                     <div><b>TO:</b> <span th:text="${props.mailTo}">to</span></div>
-                </div>
+                </div><!-- card-mail-close -->
 
-                <div class="card" style="border:none;box-shadow:none">
+                <div class="card card-ghost"><!-- card-monitor-open -->
                     <div class="hint" style="margin-bottom:6px">Monitor</div>
                     <div><b>User-Agent:</b> <span th:text="${props.userAgent}">UA</span></div>
                     <div><b>Intervalo (min):</b> <span th:text="${props.intervalMinutes}">15</span></div>
                     <div><b>Jitter (ms):</b> <span th:text="${props.jitterMsMax}">30000</span></div>
-                </div>
-            </div>
+                </div><!-- card-monitor-close -->
+            </div><!-- settings-grid-close -->
 
-            <div class="hint" style="margin-top:14px">
+            <div class="hint" style="margin-top:14px"><!-- hint-open -->
                 Los cambios de configuración se aplican reiniciando la app o ajustando variables antes de iniciar.
-            </div>
-        </div>
-    </section>
-</main>
+            </div><!-- hint-close -->
+        </div><!-- card-body-close -->
+    </section><!-- section-card-close -->
+</main><!-- main-container-close -->
 </body>
 </html>

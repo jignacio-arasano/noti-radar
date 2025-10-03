@@ -72,6 +72,15 @@
 
     .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .spacer{flex:1 1 auto}
+    .toolbar-form{display:inline-flex;gap:0;align-items:stretch}
+    .form-grid{display:grid;gap:14px;max-width:780px}
+    .form-field{display:grid;gap:8px}
+    .input-control{
+      padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);
+    }
+    .form-actions{display:flex;gap:10px;align-items:center}
+    .card-ghost{border:none;box-shadow:none;background:transparent}
+    .settings-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 
     .btn{
       appearance:none;border:1px solid var(--border);background:var(--card);color:var(--text);
@@ -132,6 +141,29 @@
 
     .hint{font-size:12px;color:var(--muted)}
     .grid-fit{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))}
+
+    @media (max-width:520px){
+      body{font-size:15px}
+      .container{padding-inline:20px;padding-block:20px}
+      .app-header{flex-direction:column;align-items:flex-start}
+      .brand{width:100%;justify-content:space-between}
+      .nav-actions{width:100%;display:grid;grid-template-columns:1fr;gap:8px}
+      .nav-actions .btn{width:100%;justify-content:center}
+      .card .card-header{flex-direction:column;align-items:flex-start}
+      .toolbar{flex-direction:column;align-items:stretch;width:100%}
+      .toolbar .btn,.toolbar a.btn{width:100%;justify-content:center}
+      .toolbar-form{width:100%;display:flex}
+      .toolbar-form .btn{width:100%;justify-content:center}
+      .toolbar .searchbar{min-width:0;width:100%}
+      .searchbar input{padding:12px 12px 12px 40px;font-size:16px}
+      .table-wrap{border-radius:var(--radius);overflow-x:auto;-webkit-overflow-scrolling:touch}
+      table{min-width:600px}
+      .form-grid{max-width:100%}
+      .form-actions{flex-direction:column;align-items:stretch}
+      .form-actions .btn,.form-actions a.btn{width:100%;justify-content:center}
+      .settings-grid{grid-template-columns:1fr}
+      .hint{font-size:13px}
+    }
   </style>
 
   <script>

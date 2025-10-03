@@ -4,25 +4,25 @@
 <body>
 <div th:replace="~{fragments :: navbar}"></div>
 
-<main class="container">
-  <section class="card">
-    <div class="card-header">
-      <div>
+<main class="container"><!-- main-container-open -->
+  <section class="card"><!-- section-card-open -->
+    <div class="card-header"><!-- card-header-open -->
+      <div><!-- header-intro-open -->
         <h2 style="margin:0 0 6px 0;">Monitoreo de páginas</h2>
         <div class="hint">CRUD de URLs + estado, con acciones rápidas y búsqueda client-side.</div>
-      </div>
-      <div class="toolbar">
-        <div class="searchbar">
+      </div><!-- header-intro-close -->
+      <div class="toolbar"><!-- toolbar-open -->
+        <div class="searchbar"><!-- searchbar-open -->
           <span class="icon">🔎</span>
           <input id="q" type="search" placeholder="Filtrar por URL..." aria-label="Buscar por URL"/>
-        </div>
-        <a class="btn" href="/pages" title="Refrescar lista">⟲ <span class="txt">Refrescar</span></a>
-        <a class="btn btn-primary" href="/pages/new">＋ <span class="txt">Agregar URL</span></a>
-      </div>
-    </div>
+        </div><!-- searchbar-close -->
+        <a class="btn" href="/pages" title="Refrescar lista"><!-- refresh-link-open -->⟲ <span class="txt">Refrescar</span></a><!-- refresh-link-close -->
+        <a class="btn btn-primary" href="/pages/new"><!-- add-link-open -->＋ <span class="txt">Agregar URL</span></a><!-- add-link-close -->
+      </div><!-- toolbar-close -->
+    </div><!-- card-header-close -->
 
-    <div class="card-body">
-      <div class="table-wrap">
+    <div class="card-body"><!-- card-body-open -->
+      <div class="table-wrap"><!-- table-wrap-open -->
         <table id="pagesTable">
           <thead>
           <tr>
@@ -38,7 +38,7 @@
           <tr th:each="p : ${pages}" th:attr="data-url=${p.url}">
             <td class="col-id mono" th:text="${p.id}">1</td>
             <td>
-              <a th:href="${p.url}" th:text="${p.url}" target="_blank" rel="noopener">https://...</a>
+              <a th:href="${p.url}" th:text="${p.url}" target="_blank" rel="noopener"><!-- url-link-open -->https://...</a><!-- url-link-close -->
             </td>
             <td class="mono">
               <time th:text="${p.lastChecked != null ? #temporals.format(p.lastChecked, 'dd/MM/yyyy HH:mm') : '-'}"
@@ -54,16 +54,16 @@
               <span th:if="${p.lastError == null}" class="badge badge-ok">OK</span>
               <span th:if="${p.lastError != null}" class="badge badge-err" th:attr="title=${p.lastError}">Error</span>
             </td>
-            <td class="actions" style="text-align:right">
-              <form th:action="@{'/pages/' + ${p.id} + '/check'}" method="post" style="display:inline">
-                <button class="btn" type="submit" title="Chequear ahora">⟳ <span class="txt">Check</span></button>
-              </form>
-              <a class="btn" th:href="@{'/pages/' + ${p.id} + '/versions'}" title="Ver historial">🕘 <span class="txt">Versiones</span></a>
-              <form th:action="@{'/pages/' + ${p.id} + '/delete'}" method="post" style="display:inline"
-                    onsubmit="return confirm('¿Eliminar esta URL del monitoreo?')">
-                <button class="btn btn-danger" type="submit" title="Eliminar">🗑 <span class="txt">Eliminar</span></button>
-              </form>
-            </td>
+            <td class="actions" style="text-align:right"><!-- actions-cell-open -->
+              <form class="toolbar-form" th:action="@{'/pages/' + ${p.id} + '/check'}" method="post"><!-- form-check-open -->
+                <button class="btn" type="submit" title="Chequear ahora"><!-- check-btn-open -->⟳ <span class="txt">Check</span></button><!-- check-btn-close -->
+              </form><!-- form-check-close -->
+              <a class="btn" th:href="@{'/pages/' + ${p.id} + '/versions'}" title="Ver historial"><!-- versions-link-open -->🕘 <span class="txt">Versiones</span></a><!-- versions-link-close -->
+              <form class="toolbar-form" th:action="@{'/pages/' + ${p.id} + '/delete'}" method="post"
+                    onsubmit="return confirm('¿Eliminar esta URL del monitoreo?')"><!-- form-delete-open -->
+                <button class="btn btn-danger" type="submit" title="Eliminar"><!-- delete-btn-open -->🗑 <span class="txt">Eliminar</span></button><!-- delete-btn-close -->
+              </form><!-- form-delete-close -->
+            </td><!-- actions-cell-close -->
           </tr>
           <tr th:if="${#lists.isEmpty(pages)}">
             <td colspan="6" style="text-align:center;color:var(--muted);padding:18px">
@@ -72,14 +72,14 @@
           </tr>
           </tbody>
         </table>
-      </div>
+      </div><!-- table-wrap-close -->
 
-      <div style="margin-top:10px" class="hint">
+      <div style="margin-top:10px" class="hint"><!-- hint-open -->
         Consejo: pasá el mouse por “Error” para ver el detalle (tooltip).
-      </div>
-    </div>
-  </section>
-</main>
+      </div><!-- hint-close -->
+    </div><!-- card-body-close -->
+  </section><!-- section-card-close -->
+</main><!-- main-container-close -->
 
 <script>
   (function(){

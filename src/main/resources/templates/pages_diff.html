@@ -4,55 +4,55 @@
 <body>
 <div th:replace="~{fragments :: navbar}"></div>
 
-<main class="container">
-  <section class="card">
-    <div class="card-header">
-      <div>
+<main class="container"><!-- main-container-open -->
+  <section class="card"><!-- section-card-open -->
+    <div class="card-header"><!-- card-header-open -->
+      <div><!-- header-intro-open -->
         <h2 style="margin:0 0 6px 0;">Comparar contenido</h2>
-        <div class="hint">
-          Página: <a th:href="${page.url}" target="_blank" rel="noopener" th:text="${page.url}">URL</a>
-        </div>
-      </div>
-      <div class="toolbar">
-        <a class="btn" th:href="@{'/pages/' + ${page.id} + '/versions'}">← Volver a versiones</a>
-        <div class="spacer"></div>
-        <button class="btn" type="button" id="wrapBtn" title="Alternar ajuste de líneas">↔ Ajuste líneas</button>
-        <button class="btn" type="button" id="syncBtn" title="Alternar scroll sincronizado">🔗 Sync scroll</button>
-      </div>
-    </div>
+        <div class="hint"><!-- header-hint-open -->
+          Página: <a th:href="${page.url}" target="_blank" rel="noopener" th:text="${page.url}"><!-- page-link-open -->URL</a><!-- page-link-close -->
+        </div><!-- header-hint-close -->
+      </div><!-- header-intro-close -->
+      <div class="toolbar"><!-- toolbar-open -->
+        <a class="btn" th:href="@{'/pages/' + ${page.id} + '/versions'}"><!-- back-link-open -->← Volver a versiones</a><!-- back-link-close -->
+        <div class="spacer"><!-- spacer-open --></div><!-- spacer-close -->
+        <button class="btn" type="button" id="wrapBtn" title="Alternar ajuste de líneas"><!-- wrap-btn-open -->↔ Ajuste líneas</button><!-- wrap-btn-close -->
+        <button class="btn" type="button" id="syncBtn" title="Alternar scroll sincronizado"><!-- sync-btn-open -->🔗 Sync scroll</button><!-- sync-btn-close -->
+      </div><!-- toolbar-close -->
+    </div><!-- card-header-close -->
 
-    <div class="card-body diff-root wrap">
-      <div class="diff-grid">
-        <div class="diff-col">
-          <div class="diff-header">
+    <div class="card-body diff-root wrap"><!-- card-body-open -->
+      <div class="diff-grid"><!-- diff-grid-open -->
+        <div class="diff-col"><!-- diff-col-left-open -->
+          <div class="diff-header"><!-- diff-header-left-open -->
             <b>Versión seleccionada</b>
-            <span class="badge badge-warn">
+            <span class="badge badge-warn"><!-- badge-left-open -->
                 <span class="mono"
                       th:text="${#temporals.format(version.createdAt, 'dd/MM/yyyy HH:mm')}">fecha</span>
-              </span>
-          </div>
-          <div class="diff-pre-wrap">
+              </span><!-- badge-left-close -->
+          </div><!-- diff-header-left-close -->
+          <div class="diff-pre-wrap"><!-- diff-pre-wrap-left-open -->
             <pre id="preLeft" class="mono diff-pre" th:text="${versionContent}"></pre>
-          </div>
-        </div>
+          </div><!-- diff-pre-wrap-left-close -->
+        </div><!-- diff-col-left-close -->
 
-        <div class="diff-col">
-          <div class="diff-header">
+        <div class="diff-col"><!-- diff-col-right-open -->
+          <div class="diff-header"><!-- diff-header-right-open -->
             <b>Versión actual</b>
-            <span class="badge badge-ok">Actual</span>
-          </div>
-          <div class="diff-pre-wrap">
+            <span class="badge badge-ok"><!-- badge-right-open -->Actual</span><!-- badge-right-close -->
+          </div><!-- diff-header-right-close -->
+          <div class="diff-pre-wrap"><!-- diff-pre-wrap-right-open -->
             <pre id="preRight" class="mono diff-pre" th:text="${currentContent}"></pre>
-          </div>
-        </div>
-      </div>
+          </div><!-- diff-pre-wrap-right-close -->
+        </div><!-- diff-col-right-close -->
+      </div><!-- diff-grid-close -->
 
-      <div class="hint" style="margin-top:12px">
+      <div class="hint" style="margin-top:12px"><!-- hint-open -->
         Tip: Usá <b>↔ Ajuste líneas</b> para alternar entre envoltura (sin overflow) y texto sin envolver (con scroll horizontal interno).
-      </div>
-    </div>
-  </section>
-</main>
+      </div><!-- hint-close -->
+    </div><!-- card-body-close -->
+  </section><!-- section-card-close -->
+</main><!-- main-container-close -->
 
 <style>
   .diff-root{ overflow-x: hidden; }
@@ -96,6 +96,12 @@
   }
   @media (max-width: 900px){
     .diff-grid{ grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px){
+    .card-header .spacer{display:none}
+    .diff-header{flex-direction:column;align-items:flex-start;gap:6px}
+    .diff-pre{max-height:60vh}
+    .card-body.diff-root{padding-inline:12px}
   }
 </style>
 

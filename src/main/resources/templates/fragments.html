@@ -71,7 +71,12 @@
     }
 
     .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .toolbar form{display:inline}
     .spacer{flex:1 1 auto}
+
+    .form-stack{display:grid;gap:14px;max-width:780px}
+    .form-field{display:grid;gap:8px}
+    .form-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 
     .btn{
       appearance:none;border:1px solid var(--border);background:var(--card);color:var(--text);
@@ -122,6 +127,7 @@
     tbody tr:hover{background:rgba(0,0,0,.02)}
     @media (prefers-color-scheme: dark){ tbody tr:hover{background:rgba(255,255,255,.03)} }
     td.actions{white-space:nowrap}
+    td.actions form{display:inline}
     .mono{font-family:ui-monospace,Consolas,Menlo,monospace}
 
     @media (max-width:760px){
@@ -132,6 +138,43 @@
 
     .hint{font-size:12px;color:var(--muted)}
     .grid-fit{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))}
+
+    @media (max-width:720px){
+      body{background:var(--bg);}
+      .container{max-width:100%;padding-inline:20px;padding-block:20px}
+      .app-header{flex-direction:column;align-items:stretch;margin-bottom:12px}
+      .brand{justify-content:space-between}
+      .nav-actions{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+      .nav-actions .btn{justify-content:center;width:100%}
+      .card{border-radius:20px}
+      .card .card-header{flex-direction:column;align-items:stretch;gap:14px;padding:18px}
+      .card .card-body{padding:20px 18px}
+      .toolbar{flex-direction:column;align-items:stretch}
+      .toolbar .btn{width:100%;justify-content:center}
+      .toolbar form{display:block !important;width:100%}
+      .toolbar form .btn{width:100%}
+      .toolbar .searchbar{width:100%;min-width:0}
+      .searchbar input{padding-block:14px}
+      .btn{font-size:15px}
+      .btn .txt{display:inline}
+      .form-actions{flex-direction:column;align-items:stretch}
+      .form-actions .btn{width:100%;justify-content:center}
+      .table-wrap{border:none;background:transparent;box-shadow:none;padding:0}
+      .table-wrap table{display:block;border-spacing:0;background:transparent}
+      .stack-table tbody{display:grid;gap:12px;margin:0;padding:0}
+      .stack-table tbody tr[data-stack-row]{display:grid;gap:12px;padding:18px;border:1px solid var(--border);border-radius:18px;background:var(--card);box-shadow:var(--shadow)}
+      .stack-table tbody tr[data-stack-row] td{display:flex;flex-direction:column;align-items:flex-start;gap:6px;border:none;padding:0}
+      .stack-table tbody tr[data-stack-row] td::before{content:attr(data-label);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+      .stack-table tbody tr[data-stack-row] td .btn{width:100%;justify-content:center}
+      .stack-table tbody tr[data-stack-row] td.actions{gap:10px;align-items:stretch}
+      .stack-table tbody tr[data-stack-row] td.actions::before{margin-bottom:4px}
+      .stack-table tbody tr[data-stack-row] td.actions{width:100%}
+      .stack-table tbody tr[data-stack-row] td.actions form{display:block !important;width:100%}
+      .stack-table tbody tr[data-stack-row] td.actions form .btn{width:100%}
+      .stack-table tbody tr[data-stack-row] td.actions a{width:100%}
+      .stack-table thead{display:none}
+      .badge{font-size:13px}
+    }
   </style>
 
   <script>

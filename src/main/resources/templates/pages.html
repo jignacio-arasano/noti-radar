@@ -14,7 +14,7 @@
       <div class="toolbar">
         <div class="searchbar">
           <span class="icon">🔎</span>
-          <input id="q" type="search" placeholder="Filtrar por URL..." aria-label="Buscar por URL"/>
+          <input id="pages-filter" type="search" placeholder="Filtrar por URL..." aria-label="Buscar por URL"/>
         </div>
         <a class="btn" href="/pages" title="Refrescar lista">⟲ <span class="txt">Refrescar</span></a>
         <a class="btn btn-primary" href="/pages/new">＋ <span class="txt">Agregar URL</span></a>
@@ -23,7 +23,7 @@
 
     <div class="card-body">
       <div class="table-wrap">
-        <table id="pagesTable">
+        <table id="pages-table" class="stack-table">
           <thead>
           <tr>
             <th class="col-id">ID</th>
@@ -35,31 +35,31 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="p : ${pages}" th:attr="data-url=${p.url}">
-            <td class="col-id mono" th:text="${p.id}">1</td>
-            <td>
+          <tr th:each="p : ${pages}" data-stack-row="true" th:attr="data-url=${p.url}">
+            <td class="col-id mono" data-label="ID" th:text="${p.id}">1</td>
+            <td data-label="URL">
               <a th:href="${p.url}" th:text="${p.url}" target="_blank" rel="noopener">https://...</a>
             </td>
-            <td class="mono">
+            <td class="mono" data-label="Último chequeo">
               <time th:text="${p.lastChecked != null ? #temporals.format(p.lastChecked, 'dd/MM/yyyy HH:mm') : '-'}"
                     th:attr="datetime=${p.lastChecked != null ? #temporals.formatISO(p.lastChecked) : ''}">
               </time>
             </td>
-            <td class="mono">
+            <td class="mono" data-label="Última modificación">
               <time th:text="${p.lastChanged != null ? #temporals.format(p.lastChanged, 'dd/MM/yyyy HH:mm') : '-'}"
                     th:attr="datetime=${p.lastChanged != null ? #temporals.formatISO(p.lastChanged) : ''}">
               </time>
             </td>
-            <td>
+            <td data-label="Estado">
               <span th:if="${p.lastError == null}" class="badge badge-ok">OK</span>
               <span th:if="${p.lastError != null}" class="badge badge-err" th:attr="title=${p.lastError}">Error</span>
             </td>
-            <td class="actions" style="text-align:right">
-              <form th:action="@{'/pages/' + ${p.id} + '/check'}" method="post" style="display:inline">
+            <td class="actions" data-label="Acciones" style="text-align:right">
+              <form th:action="@{'/pages/' + ${p.id} + '/check'}" method="post">
                 <button class="btn" type="submit" title="Chequear ahora">⟳ <span class="txt">Check</span></button>
               </form>
               <a class="btn" th:href="@{'/pages/' + ${p.id} + '/versions'}" title="Ver historial">🕘 <span class="txt">Versiones</span></a>
-              <form th:action="@{'/pages/' + ${p.id} + '/delete'}" method="post" style="display:inline"
+              <form th:action="@{'/pages/' + ${p.id} + '/delete'}" method="post"
                     onsubmit="return confirm('¿Eliminar esta URL del monitoreo?')">
                 <button class="btn btn-danger" type="submit" title="Eliminar">🗑 <span class="txt">Eliminar</span></button>
               </form>
@@ -83,8 +83,8 @@
 
 <script>
   (function(){
-    const q = document.getElementById('q');
-    const rows = Array.from(document.querySelectorAll('#pagesTable tbody tr'))
+    const q = document.getElementById('pages-filter');
+    const rows = Array.from(document.querySelectorAll('#pages-table tbody tr'))
                        .filter(tr => tr.hasAttribute('data-url'));
     function apply(){
       const term = (q.value || '').toLowerCase().trim();

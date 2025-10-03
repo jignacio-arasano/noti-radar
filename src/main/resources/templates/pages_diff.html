@@ -4,16 +4,138 @@
 <body>
 <div th:replace="~{fragments :: navbar}"></div>
 
-<main>
-  <h2>Comparar contenido</h2>
-  <p>Página: <a th:href="${page.url}" th:text="${page.url}" target="_blank">URL</a></p>
-  <a th:href="@{'/pages/' + ${page.id} + '/versions'}">Volver a versiones</a>
+<main class="container">
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h2 style="margin:0 0 6px 0;">Comparar contenido</h2>
+        <div class="hint">
+          Página: <a th:href="${page.url}" target="_blank" rel="noopener" th:text="${page.url}">URL</a>
+        </div>
+      </div>
+      <div class="toolbar">
+        <a class="btn" th:href="@{'/pages/' + ${page.id} + '/versions'}">← Volver a versiones</a>
+        <div class="spacer"></div>
+        <button class="btn" type="button" id="wrapBtn" title="Alternar ajuste de líneas">↔ Ajuste líneas</button>
+        <button class="btn" type="button" id="syncBtn" title="Alternar scroll sincronizado">🔗 Sync scroll</button>
+      </div>
+    </div>
 
-  <h3>Versión seleccionada</h3>
-  <pre th:text="${versionContent}"></pre>
+    <div class="card-body diff-root wrap">
+      <div class="diff-grid">
+        <div class="diff-col">
+          <div class="diff-header">
+            <b>Versión seleccionada</b>
+            <span class="badge badge-warn">
+                <span class="mono"
+                      th:text="${#temporals.format(version.createdAt, 'dd/MM/yyyy HH:mm')}">fecha</span>
+              </span>
+          </div>
+          <div class="diff-pre-wrap">
+            <pre id="preLeft" class="mono diff-pre" th:text="${versionContent}"></pre>
+          </div>
+        </div>
 
-  <h3>Versión actual</h3>
-  <pre th:text="${currentContent}"></pre>
+        <div class="diff-col">
+          <div class="diff-header">
+            <b>Versión actual</b>
+            <span class="badge badge-ok">Actual</span>
+          </div>
+          <div class="diff-pre-wrap">
+            <pre id="preRight" class="mono diff-pre" th:text="${currentContent}"></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="hint" style="margin-top:12px">
+        Tip: Usá <b>↔ Ajuste líneas</b> para alternar entre envoltura (sin overflow) y texto sin envolver (con scroll horizontal interno).
+      </div>
+    </div>
+  </section>
 </main>
+
+<style>
+  .diff-root{ overflow-x: hidden; }
+  .diff-grid{
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap:16px;
+    width:100%;
+    max-width:100%;
+  }
+  .diff-col{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .diff-header{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+  .diff-pre-wrap{
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--bg);
+    overflow:hidden;
+    max-width:100%;
+    box-shadow:var(--shadow);
+  }
+  .diff-pre{
+    margin:0;
+    padding:12px;
+    max-height:70vh;
+    overflow:auto;
+    width:100%;
+    box-sizing:border-box;
+    white-space:pre-wrap;
+    word-break:break-word;
+    overflow-wrap:anywhere;
+  }
+  .diff-root.nowrap .diff-pre{
+    white-space:pre;
+    word-break:normal;
+    overflow-wrap:normal;
+  }
+  @media (max-width: 900px){
+    .diff-grid{ grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  (function(){
+    const root = document.querySelector('.diff-root');
+    const btnWrap = document.getElementById('wrapBtn');
+    const btnSync = document.getElementById('syncBtn');
+    const left = document.getElementById('preLeft');
+    const right = document.getElementById('preRight');
+
+    let sync = false;
+    let syncing = false;
+
+    btnWrap.addEventListener('click', () => {
+      root.classList.toggle('wrap');
+      root.classList.toggle('nowrap');
+    });
+
+    btnSync.addEventListener('click', () => {
+      sync = !sync;
+      btnSync.classList.toggle('btn-primary', sync);
+      btnSync.title = sync ? 'Scroll sincronizado ON' : 'Alternar scroll sincronizado';
+    });
+
+    function syncScroll(from, to){
+      if (!sync || syncing) return;
+      try{
+        syncing = true;
+        const vy = from.scrollTop / (from.scrollHeight - from.clientHeight || 1);
+        const vx = from.scrollLeft / (from.scrollWidth - from.clientWidth || 1);
+        to.scrollTop  = vy * (to.scrollHeight - to.clientHeight);
+        to.scrollLeft = vx * (to.scrollWidth  - to.clientWidth);
+      } finally {
+        syncing = false;
+      }
+    }
+    left.addEventListener('scroll', () => syncScroll(left, right));
+    right.addEventListener('scroll', () => syncScroll(right, left));
+  })();
+</script>
 </body>
 </html>

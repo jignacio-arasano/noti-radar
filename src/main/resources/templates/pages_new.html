@@ -4,16 +4,30 @@
 <body>
 <div th:replace="~{fragments :: navbar}"></div>
 
-<main>
-  <h2>Agregar URL</h2>
-  <form action="/pages" method="post">
-    <label>
-      URL a monitorear
-      <input type="url" name="url" required placeholder="https://www.clarin.com/politica"/>
-    </label>
-    <button type="submit">Guardar</button>
-    <a href="/pages">Volver</a>
-  </form>
+<main class="container">
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h2 style="margin:0 0 6px 0;">Agregar URL</h2>
+        <div class="hint">Añadí una página para monitorear cambios de contenido.</div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <form action="/pages" method="post" style="display:grid; gap:14px; max-width:780px;">
+        <label style="display:grid; gap:8px;">
+          <span>URL a monitorear</span>
+          <input type="url" name="url" required placeholder="https://www.clarin.com/politica"
+                 style="padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text)"/>
+          <small class="hint">Usá una URL canónica de la sección; evitá URLs con parámetros dinámicos.</small>
+        </label>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-primary" type="submit">＋ Guardar</button>
+          <a class="btn" href="/pages">← Volver</a>
+        </div>
+      </form>
+    </div>
+  </section>
 </main>
 </body>
 </html>

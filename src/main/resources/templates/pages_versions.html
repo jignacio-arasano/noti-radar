@@ -4,30 +4,78 @@
 <body>
 <div th:replace="~{fragments :: navbar}"></div>
 
-<main>
-    <h2>Versiones</h2>
-    <p>Historial de capturas para: <a th:href="${page.url}" th:text="${page.url}" target="_blank">URL</a></p>
-    <a th:href="@{'/pages'}">Páginas</a>
+<main class="container">
+    <section class="card">
+        <div class="card-header">
+            <div>
+                <h2 style="margin:0 0 6px 0;">Versiones</h2>
+                <div class="hint">Historial de capturas para: <a th:href="${page.url}" target="_blank" rel="noopener" th:text="${page.url}">URL</a></div>
+            </div>
+            <div class="toolbar">
+                <div class="searchbar">
+                    <span class="icon">🔎</span>
+                    <input id="q" type="search" placeholder="Filtrar por hash..." aria-label="Buscar por hash"/>
+                </div>
+                <a class="btn" th:href="@{'/pages'}">← Páginas</a>
+            </div>
+        </div>
 
-    <table id="versionsTable" border="1">
-        <thead>
-        <tr>
-            <th>Fecha</th>
-            <th>Hash</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="v : ${versions}" th:attr="data-hash=${v.hash}">
-            <td><time th:text="${#temporals.format(v.createdAt, 'dd/MM/yyyy HH:mm')}"></time></td>
-            <td><span th:text="${v.hash}">hash</span></td>
-            <td><a th:href="@{'/pages/' + ${page.id} + '/diff/' + ${v.id}}">Ver diff</a></td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(versions)}">
-            <td colspan="3">Aún no hay versiones guardadas.</td>
-        </tr>
-        </tbody>
-    </table>
+        <div class="card-body">
+            <div class="table-wrap">
+                <table id="versionsTable">
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Hash</th>
+                        <th style="text-align:right">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="v : ${versions}" th:attr="data-hash=${v.hash}">
+                        <td class="mono">
+                            <time th:text="${#temporals.format(v.createdAt, 'dd/MM/yyyy HH:mm')}"
+                                  th:attr="datetime=${#temporals.formatISO(v.createdAt)}"></time>
+                        </td>
+                        <td class="mono">
+                            <span th:text="${v.hash}">hash</span>
+                            <button class="btn btn-ghost" type="button" title="Copiar hash"
+                                    onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent)">
+                                📋 <span class="txt">Copiar</span>
+                            </button>
+                        </td>
+                        <td class="actions" style="text-align:right">
+                            <a class="btn" th:href="@{'/pages/' + ${page.id} + '/diff/' + ${v.id}}">🧩 <span class="txt">Ver diff</span></a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(versions)}">
+                        <td colspan="3" style="text-align:center;color:var(--muted);padding:18px">
+                            Aún no hay versiones guardadas para esta página.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top:10px" class="hint">
+                Tip: copiá un hash para comparaciones externas.
+            </div>
+        </div>
+    </section>
 </main>
+
+<script>
+    (function(){
+      const q = document.getElementById('q');
+      const rows = Array.from(document.querySelectorAll('#versionsTable tbody tr'))
+        .filter(tr => tr.hasAttribute('data-hash'));
+      function apply(){
+        const term = (q.value || '').toLowerCase().trim();
+        rows.forEach(tr => {
+          const h = (tr.getAttribute('data-hash') || '').toLowerCase();
+          tr.style.display = (!term || h.includes(term)) ? '' : 'none';
+        });
+      }
+      q.addEventListener('input', apply);
+    })();
+</script>
 </body>
 </html>

@@ -7,7 +7,7 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
-import com.sendgrid.helpers.mail.objects.Personalization;
+//import com.sendgrid.helpers.mail.objects.Personalization;
 
 import java.io.IOException;
 
@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import scrapping.noti_radar.config.MonitorProperties;
-
-
+import com.sendgrid.helpers.mail.objects.ClickTrackingSetting;
+import com.sendgrid.helpers.mail.objects.TrackingSettings;
 @Service
 public class NotificationService {
     //private final JavaMailSender mailSender;
@@ -92,6 +92,12 @@ public class NotificationService {
                         new Email(recipient),
                         new Content("text/plain", body)
                 );
+                TrackingSettings trackingSettings = new TrackingSettings();
+                ClickTrackingSetting clickTrackingSetting = new ClickTrackingSetting();
+                clickTrackingSetting.setEnable(false);
+                clickTrackingSetting.setEnableText(false);
+                trackingSettings.setClickTrackingSetting(clickTrackingSetting);
+                mail.setTrackingSettings(trackingSettings);
 
                 Request request = new Request();
                 request.setMethod(Method.POST);

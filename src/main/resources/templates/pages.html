@@ -14,7 +14,7 @@
       <div class="toolbar">
         <div class="searchbar">
           <span class="icon">🔎</span>
-          <input id="q" type="search" placeholder="Filtrar por URL..." aria-label="Buscar por URL"/>
+          <input id="pages-filter" type="search" placeholder="Filtrar por URL..." aria-label="Buscar por URL"/>
         </div>
         <a class="btn" href="/pages" title="Refrescar lista">⟲ <span class="txt">Refrescar</span></a>
         <a class="btn btn-primary" href="/pages/new">＋ <span class="txt">Agregar URL</span></a>
@@ -23,7 +23,7 @@
 
     <div class="card-body">
       <div class="table-wrap">
-        <table id="pagesTable" class="stack-table">
+        <table id="pages-table" class="stack-table">
           <thead>
           <tr>
             <th class="col-id">ID</th>
@@ -35,7 +35,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="p : ${pages}" th:attr="data-url=${p.url},data-stack-row=${true}">
+          <tr th:each="p : ${pages}" data-stack-row="true" th:attr="data-url=${p.url}">
             <td class="col-id mono" data-label="ID" th:text="${p.id}">1</td>
             <td data-label="URL">
               <a th:href="${p.url}" th:text="${p.url}" target="_blank" rel="noopener">https://...</a>
@@ -83,8 +83,8 @@
 
 <script>
   (function(){
-    const q = document.getElementById('q');
-    const rows = Array.from(document.querySelectorAll('#pagesTable tbody tr'))
+    const q = document.getElementById('pages-filter');
+    const rows = Array.from(document.querySelectorAll('#pages-table tbody tr'))
                        .filter(tr => tr.hasAttribute('data-url'));
     function apply(){
       const term = (q.value || '').toLowerCase().trim();

@@ -22,6 +22,10 @@ public class MonitoredPage {
     @Column(length=1024)
     private String lastError;
 
+    @Lob
+    @Column(columnDefinition = "CLOB")
+    private String lastLinks;
+
     public MonitoredPage() {}
     public MonitoredPage(String url) { this.url = url; }
 
@@ -79,6 +83,14 @@ public class MonitoredPage {
 
     public void setLastError(String lastError) {
         this.lastError = lastError;
+    }
+
+    public String getLastLinks() {
+        return lastLinks;
+    }
+
+    public void setLastLinks(String lastLinks) {
+        this.lastLinks = lastLinks;
     }
 
     // getters/setters...

@@ -34,7 +34,7 @@ public class NotificationService {
             this.sendGridApiKey = sendGridApiKey;
         }
 
-        public void sendChangeEmail(String url, String summary) {
+        public void sendChangeEmail(String monitoredUrl, String changeUrl, String summary) {
             /*SimpleMailMessage msg = new SimpleMailMessage();
             msg.setFrom(props.getMailFrom());
             //msg.setTo(props.getMailTo());
@@ -42,9 +42,14 @@ public class NotificationService {
             msg.setSubject("[Monitor] Cambio detectado: " + url);
             msg.setText("URL: " + url + "\n\nResumen de cambios:\n" + summary + "\n");
             mailSender.send(msg);*/
-            String subject = "[Monitor] Cambio detectado: " + url;
-            String body = "URL: " + url + "\n\nResumen de cambios:\n" + summary + "\n";
-            sendEmail(subject, body);
+            String subject = "[Monitor] Cambio detectado: " + changeUrl;
+            StringBuilder body = new StringBuilder();
+            body.append("Página monitoreada: ").append(monitoredUrl).append("\n");
+            if (!monitoredUrl.equals(changeUrl)) {
+                body.append("Nuevo enlace: ").append(changeUrl).append("\n");
+            }
+            body.append("\nResumen de cambios:\n").append(summary).append("\n");
+            sendEmail(subject, body.toString());
         }
 
         public void sendTestEmail() {

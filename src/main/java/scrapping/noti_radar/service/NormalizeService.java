@@ -4,6 +4,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 @Service
 public class NormalizeService {
 
@@ -18,6 +23,25 @@ public class NormalizeService {
         // normalizar espacios
         text = text.replaceAll("\\s+", " ").trim();
         return text;
+    }
+
+    public List<String> extractLinks(Document doc) {
+        Set<String> ordered = new LinkedHashSet<>();
+        for (Element link : doc.select("a[href]")) {
+            String href = link.attr("href").trim();
+            if (href.isEmpty()) {
+                continue;
+            }
+            String absolute = link.attr("abs:href");
+            if (absolute == null || absolute.isBlank()) {
+                absolute = href;
+            }
+            if (absolute.startsWith("#")) {
+                continue;
+            }
+            ordered.add(absolute);
+        }
+        return new ArrayList<>(ordered);
     }
 
     private Element selectMain(Document doc) {

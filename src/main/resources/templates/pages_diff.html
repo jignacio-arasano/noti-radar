@@ -17,7 +17,6 @@
         <a class="btn" th:href="@{'/pages/' + ${page.id} + '/versions'}">← Volver a versiones</a>
         <div class="spacer"></div>
         <button class="btn" type="button" id="wrapBtn" title="Alternar ajuste de líneas">↔ Ajuste líneas</button>
-        <!--<button class="btn" type="button" id="syncBtn" title="Alternar scroll sincronizado">🔗 Sync scroll</button>-->
       </div>
     </div>
 
@@ -32,7 +31,20 @@
               </span>
           </div>
           <div class="diff-pre-wrap">
-            <pre id="preLeft" class="mono diff-pre" th:text="${versionContent}"></pre>
+            <div id="preLeft" class="mono diff-pre">
+              <th:block th:if="${versionContent != null and versionContent.startsWith('NOTI_RADAR_SECTION_VIEW::')}">
+                <th:block th:with="content=${versionContent.substring(27)}">
+                  <div th:each="line : ${content.split('\\n\\n')}" style="margin-bottom: 1em;">
+                    <th:block th:with="parts=${line.split('\\n')}">
+                      <strong th:if="${parts.length > 0}" th:text="${parts[0]}">Título de la noticia</strong>
+                      <br th:if="${parts.length > 1}"/>
+                      <a th:if="${parts.length > 1}" th:href="${parts[1]}" th:text="${parts[1]}" target="_blank" rel="noopener">https://...</a>
+                    </th:block>
+                  </div>
+                </th:block>
+              </th:block>
+              <pre th:unless="${versionContent != null and versionContent.startsWith('NOTI_RADAR_SECTION_VIEW::')}" th:text="${versionContent}"></pre>
+            </div>
           </div>
         </div>
 
@@ -42,7 +54,20 @@
             <span class="badge badge-ok">Actual</span>
           </div>
           <div class="diff-pre-wrap">
-            <pre id="preRight" class="mono diff-pre" th:text="${currentContent}"></pre>
+            <div id="preRight" class="mono diff-pre">
+              <th:block th:if="${currentContent != null and currentContent.startsWith('NOTI_RADAR_SECTION_VIEW::')}">
+                <th:block th:with="content=${currentContent.substring(27)}">
+                  <div th:each="line : ${content.split('\\n\\n')}" style="margin-bottom: 1em;">
+                    <th:block th:with="parts=${line.split('\\n')}">
+                      <strong th:if="${parts.length > 0}" th:text="${parts[0]}">Título de la noticia</strong>
+                      <br th:if="${parts.length > 1}"/>
+                      <a th:if="${parts.length > 1}" th:href="${parts[1]}" th:text="${parts[1]}" target="_blank" rel="noopener">https://...</a>
+                    </th:block>
+                  </div>
+                </th:block>
+              </th:block>
+              <pre th:unless="${currentContent != null and currentContent.startsWith('NOTI_RADAR_SECTION_VIEW::')}" th:text="${currentContent}"></pre>
+            </div>
           </div>
         </div>
       </div>
@@ -89,7 +114,22 @@
     word-break:break-word;
     overflow-wrap:anywhere;
   }
-  .diff-root.nowrap .diff-pre{
+  /* Estilo para el div que renderiza HTML */
+  .diff-pre div {
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+  }
+  /* Estilo para el pre que renderiza texto plano */
+  .diff-pre pre {
+      margin: 0;
+      font-family: inherit;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+  }
+  .diff-root.nowrap .diff-pre div,
+  .diff-root.nowrap .diff-pre pre {
     white-space:pre;
     word-break:normal;
     overflow-wrap:normal;
@@ -103,38 +143,14 @@
   (function(){
     const root = document.querySelector('.diff-root');
     const btnWrap = document.getElementById('wrapBtn');
-    const btnSync = document.getElementById('syncBtn');
     const left = document.getElementById('preLeft');
     const right = document.getElementById('preRight');
-
-    let sync = false;
-    let syncing = false;
 
     btnWrap.addEventListener('click', () => {
       root.classList.toggle('wrap');
       root.classList.toggle('nowrap');
     });
 
-    btnSync.addEventListener('click', () => {
-      sync = !sync;
-      btnSync.classList.toggle('btn-primary', sync);
-      btnSync.title = sync ? 'Scroll sincronizado ON' : 'Alternar scroll sincronizado';
-    });
-
-    function syncScroll(from, to){
-      if (!sync || syncing) return;
-      try{
-        syncing = true;
-        const vy = from.scrollTop / (from.scrollHeight - from.clientHeight || 1);
-        const vx = from.scrollLeft / (from.scrollWidth - from.clientWidth || 1);
-        to.scrollTop  = vy * (to.scrollHeight - to.clientHeight);
-        to.scrollLeft = vx * (to.scrollWidth  - to.clientWidth);
-      } finally {
-        syncing = false;
-      }
-    }
-    left.addEventListener('scroll', () => syncScroll(left, right));
-    right.addEventListener('scroll', () => syncScroll(right, left));
   })();
 </script>
 </body>

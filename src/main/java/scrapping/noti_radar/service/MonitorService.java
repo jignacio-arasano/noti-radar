@@ -11,11 +11,15 @@ import scrapping.noti_radar.repository.MonitoredPageRepository;
 import scrapping.noti_radar.repository.PageVersionRepository;
 
 import java.net.URI;
+import java.text.Normalizer;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class MonitorService {
@@ -28,6 +32,8 @@ public class MonitorService {
     private final NotificationService notificationService;
     private final MonitoredPageRepository pageRepo;
     private final PageVersionRepository versionRepo;
+    private static final Pattern DIACRITICS_AND_FRIENDS = Pattern.compile("[\\p{InCombiningDiacriticalMarks}\\p{IsLm}\\p{IsSk}]+");
+
 
     public MonitorService(FetchService fetchService,
                           NormalizeService normalizeService,
@@ -71,25 +77,30 @@ public class MonitorService {
             String normalized = normalizeService.extractMainText(doc);
             List<String> allLinks = normalizeService.extractLinks(doc);
 
-            // --- Filtro por sección (evita /videos, etc.) ---
-            String baseHost = extractHost(p.getUrl());
-            String basePrefix = extractSectionPrefix(p.getUrl()); // p.ej. "/sociedad/"
-            List<String> sectionLinks = filterLinksBySection(allLinks, baseHost, basePrefix);
-
-            // Snapshot solo de la sección
-            String previousLinksRaw = p.getLastLinks();
-            String linksSnapshot     = String.join("\n", sectionLinks);
-
-            // Detección del PRIMER link agregado en la sección
-            String detectedNewLink = findFirstAdded(previousLinksRaw, sectionLinks, baseHost, basePrefix);
-
             String hash = diffService.sha256(normalized);
             boolean changed = (p.getLastHash() == null) || !p.getLastHash().equals(hash);
 
             if (changed) {
                 String summary = diffService.summarizeDiff(p.getLastContent(), normalized, 800);
 
-                // Si hay link nuevo real, rotamos historial persistido (prev <- last, last <- nuevo)
+                // --- Nueva Lógica de Detección de Enlace por Palabras Clave ---
+                String detectedNewLink = null;
+                String firstNewTitle = findFirstNewTitle(summary);
+
+                if (firstNewTitle != null) {
+                    detectedNewLink = findBestLinkForTitle(firstNewTitle, allLinks);
+                }
+
+                // --- Fallback a la lógica anterior si no se encuentra un enlace ---
+                if (detectedNewLink == null) {
+                    log.warn("No se encontró un enlace para el título: '{}'. Usando método de fallback.", firstNewTitle);
+                    String baseHost = extractHost(p.getUrl());
+                    String basePrefix = extractSectionPrefix(p.getUrl());
+                    String previousLinksRaw = p.getLastLinks();
+                    List<String> sectionLinks = filterLinksBySection(allLinks, baseHost, basePrefix);
+                    detectedNewLink = findFirstAdded(previousLinksRaw, sectionLinks, baseHost, basePrefix);
+                }
+
                 if (detectedNewLink != null && !detectedNewLink.equals(p.getLastAddedLink())) {
                     p.setPrevAddedLink(p.getLastAddedLink());
                     p.setLastAddedLink(detectedNewLink);
@@ -99,24 +110,23 @@ public class MonitorService {
                 p.setLastChanged(Instant.now());
                 p.setLastContent(normalized);
                 p.setLastError(null);
-                p.setLastLinks(linksSnapshot);
+                p.setLastLinks(String.join("\n", allLinks));
                 pageRepo.save(p);
 
                 versionRepo.save(new PageVersion(p, normalized, hash));
 
-                // Para el subject usamos el último “nuevo” persistido; si no hay, la URL monitoreada
                 String subjectUrl = (p.getLastAddedLink() != null) ? p.getLastAddedLink() : p.getUrl();
                 notificationService.sendChangeEmail(
                         p.getUrl(),
-                        subjectUrl,           // se mostrará como "link nuevo" si es distinto de monitoredUrl
-                        p.getPrevAddedLink(), // “link viejo” persistido
+                        subjectUrl,
+                        p.getPrevAddedLink(),
                         summary
                 );
 
                 log.info("Cambio detectado en {}. Hash {}", p.getUrl(), hash);
             } else {
                 p.setLastError(null);
-                p.setLastLinks(linksSnapshot);
+                p.setLastLinks(String.join("\n", allLinks));
                 pageRepo.save(p);
                 log.info("Sin cambios: {}", p.getUrl());
             }
@@ -127,7 +137,48 @@ public class MonitorService {
         }
     }
 
-    // ---------------- Sección helpers de sección ----------------
+    private String findFirstNewTitle(String summary) {
+        if (summary == null || summary.isBlank()) return null;
+        for (String line : summary.split("\\R")) {
+            String trimmed = line.trim();
+            if (trimmed.startsWith("+ ")) {
+                return trimmed.substring(2).trim();
+            }
+        }
+        return null;
+    }
+
+    private String findBestLinkForTitle(String title, List<String> links) {
+        if (title == null || title.isBlank()) return null;
+
+        List<String> keywords = extractKeywords(title);
+        if (keywords.isEmpty()) return null;
+
+        for (String link : links) {
+            long matchCount = keywords.stream()
+                    .filter(kw -> link.toLowerCase().contains(kw))
+                    .count();
+
+            if (matchCount >= 2) {
+                log.info("Enlace encontrado para el título '{}' con {} coincidencias: {}", title, matchCount, link);
+                return link;
+            }
+        }
+
+        log.warn("No se encontró un enlace con al menos 2 palabras clave para el título: {}", title);
+        return null;
+    }
+
+    private List<String> extractKeywords(String text) {
+        String normalized = Normalizer.normalize(text, Normalizer.Form.NFD);
+        String slug = DIACRITICS_AND_FRIENDS.matcher(normalized).replaceAll("");
+
+        return Arrays.stream(slug.toLowerCase().trim().split("\\s+"))
+                .map(word -> word.replaceAll("[^a-z0-9]", ""))
+                .filter(word -> word.length() > 3) // Ignorar palabras muy cortas
+                .collect(Collectors.toList());
+    }
+
 
     private String extractHost(String url) {
         try {
@@ -139,14 +190,13 @@ public class MonitorService {
         }
     }
 
-    /** Devuelve prefijo de sección normalizado, p.ej. "/sociedad/". Si no hay, "/" */
     private String extractSectionPrefix(String url) {
         try {
             String path = URI.create(url).getPath();
             if (path == null || path.isBlank() || "/".equals(path)) return "/";
             String[] parts = path.split("/");
-            for (String part : parts) {
-                if (!part.isBlank()) return "/" + part + "/";
+            if (parts.length > 1) {
+                return "/" + parts[1] + "/";
             }
             return "/";
         } catch (Exception e) {
@@ -163,7 +213,6 @@ public class MonitorService {
 
             String path = u.getPath();
             if (path == null) path = "/";
-            if (!path.endsWith("/")) path = path + "/";
             return path.startsWith(basePrefix);
         } catch (Exception e) {
             return false;
@@ -178,8 +227,6 @@ public class MonitorService {
         }
         return out;
     }
-
-    // ------------- Detección agregado (solo para actualizar last/prev) -------------
 
     private String findFirstAdded(String previousLinksRaw, List<String> currentSectionLinks,
                                   String baseHost, String basePrefix) {

@@ -50,6 +50,6 @@ monitor:
   timeoutMs: 12000
   intervalMinutes: 15
   jitterMsMax: 30000
-  seedUrls: https://www.clarin.com/politica
+  seedUrls: https://www.infobae.com/virales
   mailFrom: imstemai@gmail.com
   mailTo: [diariociudadanosur@hotmail.com, alvarezrasanoj@gmail.com]
